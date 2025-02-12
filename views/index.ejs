@@ -5,64 +5,101 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Now Playing</title>
   <style>
-    body { text-align: center; font-family: Arial, sans-serif; color: #fff; }
-    .cover-art { max-width: 400px; margin: 20px auto; }
-    .status { font-size: 1.2em; margin-top: 20px; }
-
+    body { 
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center; 
+      font-family: Arial, sans-serif; 
+      color: #fff; 
+      background-color:#000; 
+    }
+    .cover-art { 
+      max-width: 400px; 
+      margin: 20px auto; 
+    }
+    .status { 
+      font-size: 1.2em; 
+      color:#199dc9;
+      padding: 20px; 
+    }
+    #sound-waves {
+      display:block;
+      flex: 1;
+      width: 100vw;
+      position: absolute;
+      bottom:0;
+    }
+    main {
+      background: #199dc9;
+      flex: 1;
+      width: 100vw;
+      position: relative;
+      overflow: hidden;
+    }
+    footer {
+      background: #fff;
+      color: #000;
+      flex: 1;
+      width: 100vw;
+    }
+  
     .wave {
-      animation: wave calc(var(--speed, 0) * 1s) infinite linear;
-      background-image: url("images/wave--infinite.svg");
+      background-image: url("/public/images/wave--infinite.svg");
       background-size: 50% 100%;
       bottom: -5%;
-      height: calc(var(--height, 0) * 1vh);
       left: 0;
-      opacity: var(--opacity);
       position: absolute;
       right: 0;
-      width: calc(var(--width, 0) * 1vw);
     }
+    .wave:nth-of-type(1) {
+      animation: wave calc(20.8 * 1s) infinite linear;
+      height: calc(17 * 1vh);
+      width: calc(600 * 1vw);
+      opacity: 0.3;
+    }
+    .wave:nth-of-type(2) {
+      animation: wave calc(30.4 * 1s) infinite linear;
+      height: calc(15 * 1vh);
+      width: calc(800 * 1vw);
+      opacity: 0.6;
+    }
+    .wave:nth-of-type(3) {
+      animation: wave calc(45.7 * 1s) infinite linear;
+      height: calc(5 * 1vh);
+      width: calc(400 * 1vw);
+      opacity: 1;
+    }
+
     @keyframes wave {
       to {
         transform: translate(-50%, 0);
       }
     }
-    .wave:nth-of-type(1) {
-      --height: 17;
-      --opacity: 0.3;
-      --speed: 20.8;
-      --width: 600;
-    }
-    .wave:nth-of-type(2) {
-      --height: 15;
-      --opacity: 0.6;
-      --speed: 30.4;
-      --width: 800;
-    }
-    .wave:nth-of-type(3) {
-      --height: 5;
-      --opacity: 1;
-      --speed: 45.7;
-      --width: 400;
-    }
-
-
   </style>
 </head>
-<body style="background-color:#199dc9;">
-  <div class="status">
-    <p id="status-text">Listening...</p>
-  </div>
-  <div class="track-info">
-    <h1 id="track-title">No Track Detected</h1>
-    <h2 id="track-subtitle"></h2>
-    <img id="cover-art" class="cover-art" src="/images/default-placeholder.png" alt="Default Cover Art">
-  </div>
-  
-  <div id="sound-waves" style="display: none;">
-    <div class="wave"></div>
-    <div class="wave"></div>
-    <div class="wave"></div>
-  </div>
+<body>
+  <main>
+    <div class="track-info">
+      <h1 id="track-title">No Track Detected</h1>
+      <h2 id="track-subtitle"></h2>
+      <img id="cover-art" class="cover-art" src="/public/images/default-placeholder.svg" alt="Default Cover Art">
+    </div>
+    
+    <div id="sound-waves">
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="status">
+      <p id="status-text">Listening...</p>
+    </div>
+  </footer>
 
   <script>
     /* Function to poll the /status endpoint and update the page
@@ -80,25 +117,30 @@
       fetch('/status')
         .then(response => response.json())
         .then(data => {
+          var status = document.getElementById('status-text');
+          var main = document.querySelector('main');
+          var waves = document.getElementById('sound-waves');
           switch(data.status) {
             case 'recording':
-              document.body.style('backgroundColor', '#c91983');
-              document.getElementById('status-text').innerText = "Recording";
+              main.style('backgroundColor', '#c91983');
+              status.style('color', '#c91983');
+              status.innerText = "Recording";
             break;
             case 'matched':
-              document.body.style('backgroundColor', '#000000');
-              document.getElementById('status-text').innerText = "";
+              main.style('backgroundColor', '#000000');
+              status.innerText = "";
             break;
             case 'idle':
             case 'retry_wait':
-              document.body.style('backgroundColor', '#199dc9');
-              document.getElementById('status-text').innerText = "Listening...";
+              main.style('backgroundColor', '#199dc9');
+              status.style('color', '#199dc9');
+              status.innerText = "Listening...";
             break;
           }
           if (data.status !== 'matched') {
-            document.getElementById('sound-waves').style('display', 'block');
+            waves.style('display', 'block');
           } else {
-            document.getElementById('sound-waves').style('display', 'none');
+            waves.style('display', 'none');
           }
           if (data.track && data.track.title) {
             document.getElementById('track-title').innerText = data.track.title;
@@ -107,7 +149,7 @@
           } else {
             document.getElementById('track-title').innerText = 'No Track Detected';
             document.getElementById('track-subtitle').innerText = '';
-            document.getElementById('cover-art').src = '/images/default-placeholder.svg';
+            document.getElementById('cover-art').src = '/public/images/default-placeholder.svg';
           }
         })
         .catch(err => console.error('Error fetching status:', err));
