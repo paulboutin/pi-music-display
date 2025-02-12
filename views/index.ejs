@@ -5,14 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Now Playing</title>
   <style>
-    body { text-align: center; font-family: Arial, sans-serif; background: #f4f4f4; }
+    body { text-align: center; font-family: Arial, sans-serif; color: #fff; }
     .cover-art { max-width: 400px; margin: 20px auto; }
     .status { font-size: 1.2em; margin-top: 20px; }
+
+    .wave {
+      animation: wave calc(var(--speed, 0) * 1s) infinite linear;
+      background-image: url("images/wave--infinite.svg");
+      background-size: 50% 100%;
+      bottom: -5%;
+      height: calc(var(--height, 0) * 1vh);
+      left: 0;
+      opacity: var(--opacity);
+      position: absolute;
+      right: 0;
+      width: calc(var(--width, 0) * 1vw);
+    }
+    @keyframes wave {
+      to {
+        transform: translate(-50%, 0);
+      }
+    }
+    .wave:nth-of-type(1) {
+      --height: 17;
+      --opacity: 0.3;
+      --speed: 20.8;
+      --width: 600;
+    }
+    .wave:nth-of-type(2) {
+      --height: 15;
+      --opacity: 0.6;
+      --speed: 30.4;
+      --width: 800;
+    }
+    .wave:nth-of-type(3) {
+      --height: 5;
+      --opacity: 1;
+      --speed: 45.7;
+      --width: 400;
+    }
+
+
   </style>
 </head>
-<body>
+<body style="background-color:#199dc9;">
   <div class="status">
-    <p id="status-text">Listening for a song...</p>
+    <p id="status-text">Listening...</p>
   </div>
   <div class="track-info">
     <h1 id="track-title">No Track Detected</h1>
@@ -20,13 +58,48 @@
     <img id="cover-art" class="cover-art" src="/images/default-placeholder.png" alt="Default Cover Art">
   </div>
   
+  <div id="sound-waves" style="display: none;">
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+
   <script>
-    // Function to poll the /status endpoint and update the page
+    /* Function to poll the /status endpoint and update the page
+    Statuses returned
+      idle:
+        The system is listening but no significant audio (or song) has been detected.
+      recording:
+        The system has detected voice activity and is actively recording an audio clip.
+      matched:
+        A song has been successfully recognized (i.e. the API returned a match) and the track data is now being displayed.
+      retry_wait:
+        No match was found for the recorded audio, and the system is waiting a short period before trying again.
+    */
     function updateStatus() {
       fetch('/status')
         .then(response => response.json())
         .then(data => {
-          document.getElementById('status-text').innerText = data.status;
+          switch(data.status) {
+            case 'recording':
+              document.body.style('backgroundColor', '#c91983');
+              document.getElementById('status-text').innerText = "Recording";
+            break;
+            case 'matched':
+              document.body.style('backgroundColor', '#000000');
+              document.getElementById('status-text').innerText = "";
+            break;
+            case 'idle':
+            case 'retry_wait':
+              document.body.style('backgroundColor', '#199dc9');
+              document.getElementById('status-text').innerText = "Listening...";
+            break;
+          }
+          if (data.status !== 'matched') {
+            document.getElementById('sound-waves').style('display', 'block');
+          } else {
+            document.getElementById('sound-waves').style('display', 'none');
+          }
           if (data.track && data.track.title) {
             document.getElementById('track-title').innerText = data.track.title;
             document.getElementById('track-subtitle').innerText = 'by ' + data.track.subtitle;
