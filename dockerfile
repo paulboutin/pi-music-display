@@ -7,9 +7,15 @@ WORKDIR /app
 # Install SoX and the necessary format libraries
 RUN apt-get update && apt-get install -y sox libsox-fmt-all && rm -rf /var/lib/apt/lists/*
 
+# Force npm to build native modules from source by setting the environment variable
+ENV npm_config_build_from_source=true
+
 # Copy package files and install dependencies
 COPY package*.json ./
 RUN npm install
+
+# Rebuild node-vad from source to ensure it is built for the correct architecture
+RUN npm rebuild node-vad --build-from-source
 
 # Copy the rest of your application code
 COPY . .

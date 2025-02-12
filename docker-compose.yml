@@ -11,9 +11,12 @@ services:
       - .env
 
   node:
+    platform: linux/arm64
+    #devices:
+      #- "/dev/snd:/dev/snd"
     build:
       context: .
-      dockerfile: Dockerfile  # This is your Node.js Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     env_file:
