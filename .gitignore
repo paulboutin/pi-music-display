@@ -138,5 +138,7 @@ __pycache__/
 # pytest cache
 .pytest_cache/
 
-# Docker files (if generated)
+# Docker files
 *.log
+
+.DS_Store
