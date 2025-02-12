@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  python:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile  # This is your Node.js Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - python

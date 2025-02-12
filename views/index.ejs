@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Now Playing</title>
+  <style>
+    body { text-align: center; font-family: Arial, sans-serif; background: #f4f4f4; }
+    .cover-art { max-width: 400px; margin: 20px auto; }
+    .status { font-size: 1.2em; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="status">
+    <p id="status-text">Listening for a song...</p>
+  </div>
+  <div class="track-info">
+    <h1 id="track-title">No Track Detected</h1>
+    <h2 id="track-subtitle"></h2>
+    <img id="cover-art" class="cover-art" src="/images/default-placeholder.png" alt="Default Cover Art">
+  </div>
+  
+  <script>
+    // Function to poll the /status endpoint and update the page
+    function updateStatus() {
+      fetch('/status')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('status-text').innerText = data.status;
+          if (data.track && data.track.title) {
+            document.getElementById('track-title').innerText = data.track.title;
+            document.getElementById('track-subtitle').innerText = 'by ' + data.track.subtitle;
+            document.getElementById('cover-art').src = data.track.images.coverart;
+          } else {
+            document.getElementById('track-title').innerText = 'No Track Detected';
+            document.getElementById('track-subtitle').innerText = '';
+            document.getElementById('cover-art').src = '/images/default-placeholder.png';
+          }
+        })
+        .catch(err => console.error('Error fetching status:', err));
+    }
+
+    // Poll every 5 seconds
+    setInterval(updateStatus, 5000);
+    // Initial update
+    updateStatus();
+  </script>
+</body>
+</html>

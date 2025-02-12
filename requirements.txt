@@ -1,0 +1,8 @@
+fastapi
+httpx
+certifi
+uvicorn
+shazamio
+python-multipart
+pytest
+pytest-asyncio
