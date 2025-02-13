@@ -12,7 +12,7 @@ The goal of **pi-music-display** is to create an interactive, remote display tha
 - **Proxy Server:** A Node.js/Express server listens for audio signals and records audio if present and uploads them to the Python service for song recognition.
 - **Containerized Development:** Docker Compose is used to orchestrate both the Node.js and Python services.
 - **Automated Testing:** Tests written with Mocha (for Node.js) and pytest (for Python) ensure the endpoints and integrations work as expected.
-- **Configurable Environment:** A minimal `.env` file is used to define configuration variables (e.g., server PORT).
+- **Configurable Environment:** A minimal ```.env``` file is used to define configuration variables (e.g., server PORT).
 
 ## Local Development Setup
 
@@ -52,7 +52,7 @@ This project uses Docker Compose to run both services (Node.js and Python).
     npm run docker:up
     ```
 
-This command builds both the Node.js and Python Docker images and starts the containers. By default, the Node.js service runs on port 3000 (as set in .env), and the Python FastAPI service runs on port 8000.
+This command builds both the Node.js and Python Docker images and starts the containers. By default, the Node.js service runs on port 3000 (as set in ```.env```), and the Python FastAPI service runs on port 8000.
 
 ## Running Tests
 
@@ -101,6 +101,11 @@ This command mounts your project directory into the Python container and runs:
 
 - Local Development: Run npm run docker:up to build and start both services.
 - Production Deployment: Adjust environment variables as needed and deploy the Docker containers to your target environment (e.g., a Raspberry Pi running Docker).
+
+## Manual Testing
+
+- Testing Considerations for lack of Mic access:
+    When testing locally with Docker running both services you can test the Display and the API connectivity and response by hitting the test url http://localhost:3000/simulate-voice to send the test audio file to the Shazam API. You can then see the Express service update the Display with the album artwork at http://localhost:3000/.
 
 ## Customizing the Display Template
 
@@ -255,6 +260,9 @@ Because your project is containerized, you do not need to install Node.js or Pyt
     arecord -d 5 test.wav
     aplay test.wav
     ```
+
+- Testing Considerations for lack of Mic access:
+    When testing locally with Docker running both services you can test the Display and the API connectivity and response by hitting the test url http://localhost:3000/simulate-voice to send the test audio file to the Shazam API. You can then see the Express service update the Display with the album artwork at http://localhost:3000/.
 
 ### 5. Network and Firewall
 

@@ -47,7 +47,7 @@
     }
   
     .wave {
-      background-image: url("/public/images/wave--infinite.svg");
+      background-image: url("/images/wave--infinite.svg");
       background-size: 50% 100%;
       bottom: -5%;
       left: 0;
@@ -85,7 +85,7 @@
     <div class="track-info">
       <h1 id="track-title">No Track Detected</h1>
       <h2 id="track-subtitle"></h2>
-      <img id="cover-art" class="cover-art" src="/public/images/default-placeholder.svg" alt="Default Cover Art">
+      <img id="cover-art" class="cover-art" src="/images/default-placeholder.svg" alt="Default Cover Art">
     </div>
     
     <div id="sound-waves">
@@ -119,28 +119,31 @@
         .then(data => {
           var status = document.getElementById('status-text');
           var main = document.querySelector('main');
+          var footer = document.querySelector('footer');
           var waves = document.getElementById('sound-waves');
           switch(data.status) {
             case 'recording':
-              main.style('backgroundColor', '#c91983');
-              status.style('color', '#c91983');
-              status.innerText = "Recording";
+              main.style.backgroundColor = '#c91983';
+              status.style.color = '#c91983';
+              status.innerText = 'Recording';
             break;
             case 'matched':
-              main.style('backgroundColor', '#000000');
+              main.style.backgroundColor = '#000000';
               status.innerText = "";
             break;
             case 'idle':
             case 'retry_wait':
-              main.style('backgroundColor', '#199dc9');
-              status.style('color', '#199dc9');
+              main.style.backgroundColor = '#199dc9';
+              status.style.color = '#199dc9';
               status.innerText = "Listening...";
             break;
           }
           if (data.status !== 'matched') {
-            waves.style('display', 'block');
+            waves.style.display = 'block';
+            footer.style.backgroundColor = '#ffffff';
           } else {
-            waves.style('display', 'none');
+            waves.style.display = 'none';
+            footer.style.backgroundColor = '#000000';
           }
           if (data.track && data.track.title) {
             document.getElementById('track-title').innerText = data.track.title;
@@ -149,7 +152,7 @@
           } else {
             document.getElementById('track-title').innerText = 'No Track Detected';
             document.getElementById('track-subtitle').innerText = '';
-            document.getElementById('cover-art').src = '/public/images/default-placeholder.svg';
+            document.getElementById('cover-art').src = '/images/default-placeholder.svg';
           }
         })
         .catch(err => console.error('Error fetching status:', err));
