@@ -17,7 +17,7 @@
       background-color:#000; 
     }
     .cover-art { 
-      max-width: 400px; 
+      max-width: 800px; 
       margin: 20px auto; 
     }
     .status { 
@@ -148,7 +148,10 @@
           if (data.track && data.track.title) {
             document.getElementById('track-title').innerText = data.track.title;
             document.getElementById('track-subtitle').innerText = 'by ' + data.track.subtitle;
-            document.getElementById('cover-art').src = data.track.images.coverart;
+            // modify the url for a larger version of the artwork
+            let artworkSrc = data.track.images.coverart;
+            let newSize = artworkSrc.replaceAll('400', '800');
+            document.getElementById('cover-art').src = newSize;
           } else {
             document.getElementById('track-title').innerText = 'No Track Detected';
             document.getElementById('track-subtitle').innerText = '';
