@@ -97,7 +97,7 @@ function callShazamAPI(audioFilePath) {
 
 // simulateRecording uses a test file instead of recording from mic
 async function simulateRecording(app) {
-  const testAudioFilePath = path.join(process.cwd(), 'test', 'audio_sample.ogg');
+  const testAudioFilePath = path.join(process.cwd(), 'test', 'audio_sample2.ogg');
   console.log('Simulating recording using test file:', testAudioFilePath);
   try {
     const result = await callShazamAPIReal(testAudioFilePath);
