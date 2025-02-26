@@ -33,17 +33,48 @@
       bottom:0;
     }
     main {
-      background: #199dc9;
+      background-color: #199dc9;
       flex: 1;
       width: 100vw;
       position: relative;
       overflow: hidden;
+
+      -webkit-transition: background-color 1000ms linear;
+      -ms-transition: background-color 1000ms linear;
+      transition: background-color 1000ms linear;
     }
     footer {
-      background: #fff;
+      background-color: #fff;
       color: #000;
       flex: 1;
       width: 100vw;
+
+      -webkit-transition: color 1000ms linear;
+      -ms-transition: color 1000ms linear;
+      transition: color 1000ms linear;
+    }
+
+    #toggleButton {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 70px;
+      height: 70px;
+      border: 2px solid white;
+      border-radius: 50%;
+      background-color: green; /* default state */
+      color: white;
+      font-size: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      outline: none;
+      cursor: pointer;
+    }
+
+    #toggleButton:active {
+      transform: scale(0.95);
     }
   
     .wave {
@@ -99,6 +130,9 @@
     <div class="status">
       <p id="status-text">Listening...</p>
     </div>
+    <button id="toggleButton" onclick="togglePause()" title="Pause/Resume Service">
+      <i id="toggleIcon" class="icon fas fa-play"></i>
+    </button>
   </footer>
 
   <script>
@@ -112,6 +146,8 @@
         A song has been successfully recognized (i.e. the API returned a match) and the track data is now being displayed.
       retry_wait:
         No match was found for the recorded audio, and the system is waiting a short period before trying again.
+      paused:
+        User paused the service.
     */
     function updateStatus() {
       fetch('/status')
@@ -137,6 +173,11 @@
               status.style.color = '#199dc9';
               status.innerText = "Listening...";
             break;
+            case 'paused':
+              main.style.backgroundColor = '#199dc9';
+              status.style.color = '#199dc9';
+              status.innerText = "Paused";
+            break;
           }
           if (data.status !== 'matched') {
             waves.style.display = 'block';
@@ -153,7 +194,11 @@
             let newSize = artworkSrc.replaceAll('400', '800');
             document.getElementById('cover-art').src = newSize;
           } else {
-            document.getElementById('track-title').innerText = 'No Track Detected';
+            if (data.status !== 'paused') {
+              document.getElementById('track-title').innerText = 'Service Paused';
+            } else {
+              document.getElementById('track-title').innerText = 'No Track Detected';
+            }
             document.getElementById('track-subtitle').innerText = '';
             document.getElementById('cover-art').src = '/images/default-placeholder.svg';
           }
@@ -165,6 +210,38 @@
     setInterval(updateStatus, 5000);
     // Initial update
     updateStatus();
+
+    // Initial state;
+    let paused = false;
+
+    async function togglePause() {
+      try {
+        const response = await fetch('/togglePause', { method: 'POST' });
+        const data = await response.json();
+        paused = (data.status === 'paused');
+        updateToggleButton();
+      } catch (err) {
+        console.error('Error toggling pause:', err);
+      }
+    }
+
+    function updateToggleButton() {
+      const btn = document.getElementById('toggleButton');
+      const icon = document.getElementById('toggleIcon');
+      if (paused) {
+        // When paused: orange button with pause icon (white)
+        btn.style.backgroundColor = 'orange';
+        icon.className = 'icon fas fa-pause';  // using Font Awesome classes
+      } else {
+        // When not paused: green button with play icon (white)
+        btn.style.backgroundColor = 'green';
+        icon.className = 'icon fas fa-play';
+      }
+    }
+
+    // Initialize on load
+    updateToggleButton();
   </script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>

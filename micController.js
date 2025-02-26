@@ -1,5 +1,6 @@
 // micController.js
 import { createRequire } from 'module';
+import { execSync } from 'child_process';
 const require = createRequire(import.meta.url);
 const FormData = require('form-data'); 
 const recorder = require('node-record-lpcm16');
@@ -11,7 +12,8 @@ const STATES = {
   IDLE: 'idle',
   RECORDING: 'recording',
   MATCHED: 'matched',
-  RETRY_WAIT: 'retry_wait'
+  RETRY_WAIT: 'retry_wait',
+  PAUSED: 'paused'  // state for user-paused mode
 };
 
 let currentState = STATES.IDLE;
@@ -27,6 +29,16 @@ function updateAppStatus(app, status) {
   console.log('Status updated:', status);
 }
 
+// Add a route to toggle pause state:
+app.post('/togglePause', (req, res) => {
+  if (app.locals.status === STATES.PAUSED) {
+    app.locals.status = STATES.IDLE; // or resume your normal state
+  } else {
+    app.locals.status = STATES.PAUSED;
+  }
+  res.json({ status: app.locals.status });
+});
+
 function recordAudioClip() {
   return new Promise((resolve, reject) => {
     const filePath = path.join(process.cwd(), 'temp_audio.ogg');
@@ -37,7 +49,8 @@ function recordAudioClip() {
       sampleRateHertz: 16000,
       threshold: 0,
       verbose: false,
-      recordProgram: 'sox'
+      recordProgram: 'sox',
+      device: 'plughw:2,0'  // specifying the USB audio device
     });
     const micStream = recProc.stream();
 
@@ -128,30 +141,43 @@ async function recordAndProcess(app) {
   updateAppStatus(app, STATES.RECORDING);
   try {
     const audioFilePath = await recordAudioClip();
-    const result = await callShazamAPI(audioFilePath);
+    console.log(`Recorded file: ${audioFilePath}, size: ${fs.statSync(audioFilePath).size} bytes`);
 
-    // Clean up temporary file
-    fs.unlink(audioFilePath, (err) => {
-      if (err) console.error('Error deleting file:', err);
-    });
+    // Amplify the recording using sox.
+    // You can adjust the volume factor (e.g., 12 or 12.3) based on your testing.
+    const amplifiedFilePath = path.join(process.cwd(), 'amplified.ogg');
+    console.log("Amplifying the recorded audio...");
+    execSync(`sox ${audioFilePath} ${amplifiedFilePath} vol 12`, { stdio: 'inherit' });
+
+    console.log(`Amplified file: ${amplifiedFilePath}, size: ${fs.statSync(amplifiedFilePath).size} bytes`);
+
+    // Now send the amplified file for song recognition.
+    const result = await callShazamAPI(amplifiedFilePath);
+
+    // Clean up the temporary files if needed.
+    fs.unlink(audioFilePath, (err) => { if(err) console.error('Error deleting file:', err); });
+    fs.unlink(amplifiedFilePath, (err) => { if(err) console.error('Error deleting file:', err); });
 
     if (result && result.track) {
-      updateAppStatus(app, STATES.MATCHED);
-      // Update the app locals with the track data
-      if (app && app.locals) {
+      // Check if the recognized song is the same as the current song
+      if (app.locals.track && app.locals.track.id === result.track.id) {
+        console.log('Same track matched, retrying soon...');
+        // Update status if needed, but set a short timeout (e.g., 10 seconds)
+        // updateAppStatus(app, STATES.MATCHED);
+        setTimeout(() => {
+          updateAppStatus(app, STATES.IDLE);
+        }, 10000); // 10 seconds
+      } else {
+        // New track matched; update the display and set a timeout based on the track's duration
+        updateAppStatus(app, STATES.MATCHED);
         app.locals.track = result.track;
-      }
-      console.log('Song matched:', result.track.title);
-
-      // Use the track duration (or default to 180s) to set a timer before resetting to idle
-      const duration = result.track.duration || 180;
-      songDurationTimer = setTimeout(() => {
-        updateAppStatus(app, STATES.IDLE);
-        // Optionally clear track data
-        if (app && app.locals) {
+        console.log('New track matched:', result.track.title);
+        const duration = result.track.duration || 180;
+        setTimeout(() => {
+          updateAppStatus(app, STATES.IDLE);
           app.locals.track = null;
-        }
-      }, duration * 1000);
+        }, duration * 1000);
+      } 
     } else {
       // No match found
       retryCount++;
@@ -189,7 +215,8 @@ function startListening(app) {
     sampleRateHertz: 16000,
     threshold: 0,
     verbose: false,
-    recordProgram: 'sox'
+    recordProgram: 'sox',
+    device: 'plughw:2,0'  // specifying the USB audio device
   }).stream();
 
   micStream.on('data', (data) => {

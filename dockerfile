@@ -5,7 +5,7 @@ FROM node:21.4.0
 WORKDIR /app
 
 # Install SoX and the necessary format libraries
-RUN apt-get update && apt-get install -y sox libsox-fmt-all && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y sox libsox-fmt-all alsa-utils pulseaudio pulseaudio-utils && rm -rf /var/lib/apt/lists/*
 
 # Force npm to build native modules from source by setting the environment variable
 ENV npm_config_build_from_source=true

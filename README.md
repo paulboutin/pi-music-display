@@ -205,11 +205,12 @@ The main template is found at ```views/index.ejs```. This file contains the HTML
     sudo sh get-docker.sh
     ```
 
-- Add Your User to the Docker Group:
-    To run Docker commands without sudo:
+- Add Your User to the Docker Group and Audio Group:
+    To run Docker commands without sudo and allow the docker user access to audio devices:
 
     ```bash
     sudo usermod -aG docker $USER
+    sudo usermod -aG audio $USER
     ```
 
     Log out and back in for the group change to take effect.
@@ -276,23 +277,33 @@ Because your project is containerized, you do not need to install Node.js or Pyt
 
 - Transfer Your Code:
     You can clone your GitHub repository onto the Pi:
+    (This will require you to install git cli and configure permissions and possibly ssh keys for git access)
 
     ```bash
     git clone https://github.com/paulboutin/pi-music-display.git
     cd pi-music-display
     ```
 
-    If the you don’t have Git installed or configured you can either manually download the zip file of this repo or 
-    run the following commands on your Pi (assuming you have curl and unzip installed):
+    If the you don’t have Git installed or configured you can opt to manually download the zip file of this repo. 
+    To do so, run the following commands on your Pi:
 
+    Install unzip
     ```bash
-    # Download the ZIP file of the main branch
+    sudo apt install unzip
+    ```
+
+    Download the ZIP file of the main branch
+    ```bash
     curl -LO https://github.com/paulboutin/pi-music-display/archive/refs/heads/main.zip
+    ```
 
-    # Unzip the downloaded file
+    Unzip the downloaded file
+    ```bash
     unzip main.zip
+    ```
 
-    # Change into the project directory (the folder name might include the branch name)
+    Change into the project directory (the folder name might include the branch name)
+    ```bash
     cd pi-music-display-main
     ```
 
@@ -301,8 +312,13 @@ Because your project is containerized, you do not need to install Node.js or Pyt
 - Environment Variables:
     Ensure you have your ```.env``` file on the Pi with the necessary variables (e.g., ```PORT=3000```).
 
+    ```bash
+    touch .env
+    echo "PORT=3000" > .env
+    ```
+
 - Build and Run with Docker Compose:
-    Use your Docker Compose setup to build and start both services:
+    Use Docker Compose setup to build and start both services (Be sure to use the same user you granted access to sudo to run Docker):
 
     ```bash
     docker compose up --build
@@ -314,6 +330,7 @@ Because your project is containerized, you do not need to install Node.js or Pyt
 
 To have your application start automatically when the Pi boots, you can create a systemd service file.
 For example, create a file ```/etc/systemd/system/pi-music-display.service``` with the following content:
+(replace $USER with the user that has permission to run docker from step 2 above.)
 
 ```ini
 [Unit]
@@ -322,11 +339,11 @@ After=docker.service
 Requires=docker.service
 
 [Service]
-WorkingDirectory=/home/pi/pi-music-display
+WorkingDirectory=/home/$USER/pi-music-display
 ExecStart=/usr/bin/docker compose up --build
 ExecStop=/usr/bin/docker compose down
 Restart=always
-User=pi
+User=$USER
 
 [Install]
 WantedBy=multi-user.target
@@ -339,7 +356,11 @@ sudo systemctl enable pi-music-display.service
 sudo systemctl start pi-music-display.service
 ```
 
+In order to write the contents to a file you may consider using ```vi``` as ```vim``` is not installed by default on Raspberry Pi.
 
+```bash
+vi /etc/systemd/system/pi-music-display.service
+```
 
 ## License
 
