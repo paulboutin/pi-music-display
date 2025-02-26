@@ -2,7 +2,7 @@
 import express from 'express';
 import multer from 'multer';
 import axios from 'axios';
-import { simulateRecording } from './micController.js';
+import { simulateRecording, STATES } from './micController.js';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const FormData = require('form-data'); // Use CommonJS require for form-data

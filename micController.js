@@ -13,7 +13,7 @@ const STATES = {
   RECORDING: 'recording',
   MATCHED: 'matched',
   RETRY_WAIT: 'retry_wait',
-  PAUSED: 'paused'  // state for user-paused mode
+  PAUSED: 'paused'
 };
 
 let currentState = STATES.IDLE;
@@ -230,4 +230,4 @@ function startListening(app) {
   });
 }
 
-export { startListening, recordAndProcess, simulateRecording };
+export { startListening, recordAndProcess, simulateRecording, STATES };
