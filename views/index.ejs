@@ -63,7 +63,7 @@
       height: 70px;
       border: 2px solid white;
       border-radius: 50%;
-      background-color: green; /* default state */
+      background-color: orange; /* default state */
       color: white;
       font-size: 32px;
       display: flex;
@@ -132,7 +132,7 @@
       <p id="status-text">Listening...</p>
     </div>
     <button id="toggleButton" onclick="togglePause()" title="Pause/Resume Service">
-      <i id="toggleIcon" class="icon fas fa-play"></i>
+      <i id="toggleIcon" class="icon fas fa-pause"></i>
     </button>
   </footer>
 
@@ -230,11 +230,11 @@
       const btn = document.getElementById('toggleButton');
       const icon = document.getElementById('toggleIcon');
       if (paused) {
-        // When paused: orange button with pause icon (white)
+        // When not paused: orange button with pause icon (white)
         btn.style.backgroundColor = 'orange';
         icon.className = 'icon fas fa-pause';  // using Font Awesome classes
       } else {
-        // When not paused: green button with play icon (white)
+        // When paused: green button with play icon (white)
         btn.style.backgroundColor = 'green';
         icon.className = 'icon fas fa-play';
       }
