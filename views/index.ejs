@@ -194,7 +194,7 @@
             let newSize = artworkSrc.replaceAll('400', '800');
             document.getElementById('cover-art').src = newSize;
           } else {
-            if (data.status !== 'paused') {
+            if (data.status === 'paused') {
               document.getElementById('track-title').innerText = 'Service Paused';
             } else {
               document.getElementById('track-title').innerText = 'No Track Detected';
