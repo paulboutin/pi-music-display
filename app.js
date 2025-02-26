@@ -51,6 +51,16 @@ app.get('/status', (req, res) => {
   });
 });
 
+// Route to toggle pause state:
+app.post('/togglePause', (req, res) => {
+  if (app.locals.status === STATES.PAUSED) {
+    app.locals.status = STATES.IDLE; // or resume your normal state
+  } else {
+    app.locals.status = STATES.PAUSED;
+  }
+  res.json({ status: app.locals.status });
+});
+
 // Used for testing the API service and the Template without a Mic
 // To use it navigate to http://localhost:3000/simulate-voice to trigger the event
 // your .env file must have SIMULATE_API=false for the test to work

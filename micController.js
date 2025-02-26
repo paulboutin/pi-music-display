@@ -29,16 +29,6 @@ function updateAppStatus(app, status) {
   console.log('Status updated:', status);
 }
 
-// Add a route to toggle pause state:
-app.post('/togglePause', (req, res) => {
-  if (app.locals.status === STATES.PAUSED) {
-    app.locals.status = STATES.IDLE; // or resume your normal state
-  } else {
-    app.locals.status = STATES.PAUSED;
-  }
-  res.json({ status: app.locals.status });
-});
-
 function recordAudioClip() {
   return new Promise((resolve, reject) => {
     const filePath = path.join(process.cwd(), 'temp_audio.ogg');
