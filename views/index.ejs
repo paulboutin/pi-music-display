@@ -230,13 +230,13 @@
       const btn = document.getElementById('toggleButton');
       const icon = document.getElementById('toggleIcon');
       if (paused) {
-        // When not paused: orange button with pause icon (white)
-        btn.style.backgroundColor = 'orange';
-        icon.className = 'icon fas fa-pause';  // using Font Awesome classes
-      } else {
-        // When paused: green button with play icon (white)
+        // When paused: green button with pause play icon
         btn.style.backgroundColor = 'green';
         icon.className = 'icon fas fa-play';
+      } else {
+        // When not paused: orange button with pause icon
+        btn.style.backgroundColor = 'orange';
+        icon.className = 'icon fas fa-pause';
       }
     }
 
