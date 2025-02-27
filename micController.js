@@ -183,19 +183,16 @@ function processAudioData(audioChunk, app, vadInstance) {
         if (!gapTimer) {
           gapTimer = setTimeout(() => {
             console.log('Gap detected.');
+            updateAppStatus(app, STATES.IDLE);
             // If there's an existing track, start a clearTrackTimer to clear it after 5 minutes.
             if (app.locals.track) {
               if (!clearTrackTimer) {
                 clearTrackTimer = setTimeout(() => {
                   console.log('5 minutes of silence or no new song matched, clearing track info.');
-                  updateAppStatus(app, STATES.IDLE);
                   app.locals.track = null;
                   clearTrackTimer = null;
                 }, clearTrackDuration);
               }
-            } else {
-              // No track is currently set, so simply set state to IDLE.
-              updateAppStatus(app, STATES.IDLE);
             }
             gapTimer = null;
           }, gapDuration);
