@@ -211,7 +211,6 @@ function processAudioData(audioChunk, app, vadInstance) {
         // If we are idle, trigger a new recording.
         if (currentState === STATES.IDLE) {
           console.log('Sound resumed after gap. Starting new recording...');
-          updateAppStatus(app, STATES.RECORDING);
           recordAndProcess(app);
         }
       }

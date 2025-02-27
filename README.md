@@ -380,7 +380,7 @@ Create a script (for example, /home/pi/start-kiosk.sh) that launches Chromium in
 # Wait a few seconds to allow services to start
 sleep 10
 # Launch Chromium in kiosk mode
-chromium-browser --kiosk http://localhost:3000
+chromium-browser --kiosk --noerrdialogs --enable-features=OverlayScrollbar --disable-restore-session-state http://localhost:3000
 ```
 
 Make the script executable:
