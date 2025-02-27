@@ -23,7 +23,7 @@ let retryCount = 0;
 const MAX_RETRIES = 3;
 let gapTimer = null;
 let clearTrackTimer = null;
-const gapDuration = 5000; // 5 seconds gap duration
+const gapDuration = 3500; // 3.5 seconds gap duration
 const clearTrackDuration = 300000; // 5 minutes in milliseconds
 const sampleRate = 16000; // in Hz
 let isRecording = false;
@@ -155,7 +155,7 @@ async function recordAndProcess(app) {
 
     if (result && result.track) {
       if (app.locals.track && app.locals.track.id === result.track.id) {
-        console.log('Same track matched; maintaining current match.');
+        console.log('Same track matched; maintaining current match. Track matched:', result.track.title);
         updateAppStatus(app, STATES.MATCHED); // Don't pass the updated track info but update the status to Matched
       } else {
         console.log('New track matched:', result.track.title);
