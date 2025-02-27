@@ -196,11 +196,9 @@ async function recordAndProcess(app) {
 }
 
 // processAudioData: Called for each incoming audio chunk from the microphone stream.
-function processAudioData(audioChunk, app) {
-  // Process the chunk with VAD; note: VAD.processAudio returns a Promise.
-  VAD.processAudio(audioChunk, sampleRate)
+function processAudioData(audioChunk, app, vadInstance) {
+  vadInstance.processAudio(audioChunk, sampleRate)
     .then((result) => {
-      // If no voice (sound) is detected...
       if (result !== VAD.Event.VOICE) {
         if (!gapTimer) {
           gapTimer = setTimeout(() => {
@@ -210,12 +208,10 @@ function processAudioData(audioChunk, app) {
           }, gapDuration);
         }
       } else {
-        // Sound is present, clear any pending gap timer.
         if (gapTimer) {
           clearTimeout(gapTimer);
           gapTimer = null;
         }
-        // If we've previously detected a gap (or if we're idle), start recording a new clip.
         if (currentState === STATES.GAP_DETECTED || currentState === STATES.IDLE) {
           console.log('Sound resumed after gap. Starting recording...');
           updateAppStatus(app, STATES.RECORDING);
@@ -235,7 +231,9 @@ function startListening(app) {
     app.locals.track = null;
   }
 
-  // Start a continuous microphone stream for VAD analysis.
+  // Create a single VAD instance
+  const vadInstance = new VAD(VAD.Mode.NORMAL);
+
   const micStream = recorder.record({
     sampleRateHertz: sampleRate,
     threshold: 0,
@@ -245,12 +243,13 @@ function startListening(app) {
   }).stream();
 
   micStream.on('data', (data) => {
-    processAudioData(data, app);
+    processAudioData(data, app, vadInstance);
   });
 
   micStream.on('error', (err) => {
     console.error('Microphone stream error:', err);
   });
 }
+
 
 export { startListening, recordAndProcess, simulateRecording, STATES };
