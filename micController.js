@@ -23,8 +23,8 @@ let retryCount = 0;
 const MAX_RETRIES = 3;
 let gapTimer = null;
 let clearTrackTimer = null;
-const gapDuration = 3500; // 3.5 seconds gap duration
-const clearTrackDuration = 300000; // 5 minutes in milliseconds
+const gapDuration = 2500; // 2.5 seconds gap duration
+const clearTrackDuration = 180000; // 3 minutes in milliseconds
 const sampleRate = 16000; // in Hz
 let isRecording = false;
 
