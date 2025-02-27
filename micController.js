@@ -214,7 +214,6 @@ function processAudioData(audioChunk, app, vadInstance) {
         }
         if (currentState === STATES.GAP_DETECTED || currentState === STATES.IDLE) {
           console.log('Sound resumed after gap. Starting recording...');
-          updateAppStatus(app, STATES.RECORDING);
           recordAndProcess(app);
         }
       }
