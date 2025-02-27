@@ -154,6 +154,7 @@ async function recordAndProcess(app) {
     fs.unlink(amplifiedFilePath, (err) => { if (err) console.error('Error deleting file:', err); });
 
     if (result && result.track) {
+      console.log('Response from Shazam API:', result.track);
       console.log('Track matched:', result.track.title);
       updateAppStatus(app, STATES.MATCHED, result.track);
       app.locals.track = result.track;
