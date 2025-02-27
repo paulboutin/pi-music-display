@@ -9,6 +9,14 @@ import fs from 'fs';
 import path from 'path';
 import axios from 'axios';
 
+try {
+  // Boost the source volume to 150%
+  execSync('pactl set-source-volume 12154 150%');
+  console.log('Microphone input volume boosted to 150%.');
+} catch (err) {
+  console.error('Failed to boost microphone volume:', err);
+}
+
 const STATES = {
   IDLE: 'idle',
   RECORDING: 'recording',
