@@ -186,7 +186,10 @@ The main template is found at ```views/index.ejs```. This file contains the HTML
 ### 1. Operating System
 
 - Raspberry Pi OS:
-    Install Raspberry Pi OS (preferably the Lite version if you don’t need a desktop environment, or the full version if you want one). You can download the image from the Raspberry Pi website.
+    Install Raspberry Pi OS (preferably the Lite version if you don’t need a desktop environment, or the full version if you want one). Use the Raspberry Pi Imager application and follow instructions for your card on the [Raspberry Pi website](https://www.raspberrypi.com/software/).
+
+- Get access to your system either directly or over SSH. You'll need to run commands via the terminal to get this all set up. Instructions are on the site.
+
 - Updates:
     Once installed, update your system:
 
@@ -230,15 +233,7 @@ The main template is found at ```views/index.ejs```. This file contains the HTML
 
     Alternatively, follow the official Docker documentation for installing Docker Compose on ARM devices.
 
-### 3. Node.js and Python (Within Docker)
-
-Because your project is containerized, you do not need to install Node.js or Python on the host Pi directly—the Docker images include these dependencies. However, if you want to run parts of your project natively or for debugging:
-- Install Node.js:
-    Use [NodeSource’s installer](https://github.com/nodesource/distributions) for ARM.
-- Install Python:
-    Raspberry Pi OS comes with Python pre-installed. You might want to install a specific version or virtualenv if needed.
-
-### 4. Microphone and Audio Access
+### 3. Microphone and Audio Access
 
 - Hardware Setup:
     Connect your USB microphone (or any supported microphone) to the Raspberry Pi. Verify that it is recognized by listing available recording devices:
@@ -265,7 +260,7 @@ Because your project is containerized, you do not need to install Node.js or Pyt
 - Testing Considerations for lack of Mic access:
     When testing locally with Docker running both services you can test the Display and the API connectivity and response by hitting the test url http://localhost:3000/simulate-voice to send the test audio file to the Shazam API. You can then see the Express service update the Display with the album artwork at http://localhost:3000/.
 
-### 5. Network and Firewall
+### 4. Network and Firewall
 
 - Ports:
     Make sure that the ports you plan to use (for example, 3000 for Node.js and 8000 for the Python service) are open and not blocked by any firewall on your network.
@@ -273,7 +268,7 @@ Because your project is containerized, you do not need to install Node.js or Pyt
 - WiFi/Ethernet:
     Ensure your Pi has a stable network connection, whether via WiFi or Ethernet.
 
-### 6. Deployment of Your Dockerized Application
+### 5. Deployment of Your Dockerized Application
 
 - Transfer Your Code:
     You can clone your GitHub repository onto the Pi:
@@ -331,7 +326,7 @@ Because your project is containerized, you do not need to install Node.js or Pyt
 
     This will launch the Node.js service (and the Python FastAPI service) as defined in your ```docker-compose.yml``` file.
 
-### 7. Optional: Setting Up Autostart on Boot
+### 6. Optional: Setting Up Autostart on Boot
 
 To have your application start automatically when the Pi boots, you can create a systemd service file.
 For example, create a file ```/etc/systemd/system/pi-music-display.service``` with the following content:
@@ -368,7 +363,7 @@ In order to write the contents to a file you may consider using ```vi``` as ```v
 vi /etc/systemd/system/pi-music-display.service
 ```
 
-### 8. Install Chromium to launch a browser in kiosk mode
+### 7. Install Chromium to launch a browser in kiosk mode
 
 If Chromium isn’t already installed on your Pi, install it with:
 
@@ -377,7 +372,7 @@ sudo apt-get update
 sudo apt-get install chromium-browser
 ```
 
-### 9. Create a Startup Script
+### 8. Create a Startup Script
 Create a script (for example, /home/pi/start-kiosk.sh) that launches Chromium in kiosk mode with your URL:
 
 ```bash
@@ -393,7 +388,7 @@ Make the script executable:
 chmod +x /home/pi/start-kiosk.sh
 ```
 
-### 10. Create a systemd Service File
+### 9. Create a systemd Service File
 Create a service file (for example, /etc/systemd/system/kiosk.service) with the following content:
 
 **_NOTE:_** Replace $user with your docker user
@@ -420,7 +415,7 @@ WantedBy=graphical.target
 `After=graphical.target:` Ensures the service starts only after the graphical environment is up.
 
 
-### 11. Enable and Test the Service
+### 10. Enable and Test the Service
 Enable the service to start at boot:
 
 ```bash
