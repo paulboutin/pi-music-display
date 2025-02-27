@@ -154,14 +154,9 @@ async function recordAndProcess(app) {
     fs.unlink(amplifiedFilePath, (err) => { if (err) console.error('Error deleting file:', err); });
 
     if (result && result.track) {
-      if (app.locals.track && app.locals.track.id === result.track.id) {
-        console.log('Same track matched; maintaining current match. Track matched:', result.track.title);
-        updateAppStatus(app, STATES.MATCHED); // Don't pass the updated track info but update the status to Matched
-      } else {
-        console.log('New track matched:', result.track.title);
-        updateAppStatus(app, STATES.MATCHED, result.track);
-        app.locals.track = result.track;
-      }
+      console.log('Track matched:', result.track.title);
+      updateAppStatus(app, STATES.MATCHED, result.track);
+      app.locals.track = result.track;
     } else {
       console.log('No match found, remaining idle.');
       updateAppStatus(app, STATES.IDLE);
