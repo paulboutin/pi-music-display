@@ -10,11 +10,11 @@ import path from 'path';
 import axios from 'axios';
 
 try {
-  // Boost the source volume to 150%
-  execSync('pactl set-source-volume 12154 150%');
-  console.log('Microphone input volume boosted to 150%.');
+  execSync('amixer -c 2 set Mic 100%');
+  execSync("amixer -c 2 set 'Auto Gain Control' off");
+  console.log('Microphone volume set to 100% and auto gain disabled.');
 } catch (err) {
-  console.error('Failed to boost microphone volume:', err);
+  console.error('Failed to set microphone volume:', err);
 }
 
 const STATES = {
