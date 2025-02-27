@@ -302,6 +302,11 @@ Because your project is containerized, you do not need to install Node.js or Pyt
     unzip main.zip
     ```
 
+    cleanup the unneeded file
+    ```bash
+    rm main.zip
+    ```
+
     Change into the project directory (the folder name might include the branch name)
     ```bash
     cd pi-music-display-main
@@ -330,7 +335,8 @@ Because your project is containerized, you do not need to install Node.js or Pyt
 
 To have your application start automatically when the Pi boots, you can create a systemd service file.
 For example, create a file ```/etc/systemd/system/pi-music-display.service``` with the following content:
-(replace $USER with the user that has permission to run docker from step 2 above.)
+
+**_NOTE:_** Replace $USER with the user that has permission to run docker from step 2 above.
 
 ```ini
 [Unit]
@@ -361,6 +367,88 @@ In order to write the contents to a file you may consider using ```vi``` as ```v
 ```bash
 vi /etc/systemd/system/pi-music-display.service
 ```
+
+### 8. Install Chromium to launch a browser in kiosk mode
+
+If Chromium isn’t already installed on your Pi, install it with:
+
+```bash
+sudo apt-get update
+sudo apt-get install chromium-browser
+```
+
+### 9. Create a Startup Script
+Create a script (for example, /home/pi/start-kiosk.sh) that launches Chromium in kiosk mode with your URL:
+
+```bash
+#!/bin/bash
+# Wait a few seconds to allow services to start
+sleep 10
+# Launch Chromium in kiosk mode
+chromium-browser --kiosk http://localhost:3000
+```
+
+Make the script executable:
+```bash
+chmod +x /home/pi/start-kiosk.sh
+```
+
+### 10. Create a systemd Service File
+Create a service file (for example, /etc/systemd/system/kiosk.service) with the following content:
+
+**_NOTE:_** Replace $user with your docker user
+
+```ini
+[Unit]
+Description=Kiosk Mode Browser
+After=graphical.target
+
+[Service]
+User=$USER
+Environment=DISPLAY=:0
+ExecStart=/home/$USER/start-kiosk.sh
+Restart=no
+
+[Install]
+WantedBy=graphical.target
+```
+
+`User=pi:` Runs the service as the “pi” user.
+
+`Environment=DISPLAY=:0:` Specifies the X display (adjust if your display is different).
+
+`After=graphical.target:` Ensures the service starts only after the graphical environment is up.
+
+
+### 11. Enable and Test the Service
+Enable the service to start at boot:
+
+```bash
+sudo systemctl enable kiosk.service
+```
+Now, either start it manually with:
+```bash
+sudo systemctl start kiosk.service
+```
+Or reboot your Pi:
+```bash
+sudo reboot
+```
+After reboot, Chromium should launch in full‑screen mode pointing to http://localhost:3000.
+
+Alternative Method: LXSession Autostart
+If your Raspberry Pi runs a desktop environment (LXDE on Raspberry Pi OS), you can also add an autostart entry. 
+
+Create or edit the file:
+```bash
+nano ~/.config/lxsession/LXDE-pi/autostart
+```
+Add this line:
+```bash
+@chromium-browser --kiosk http://localhost:3000
+```
+Save and reboot. This method will also launch Chromium in kiosk mode when the desktop environment starts.
+
 
 ## License
 
