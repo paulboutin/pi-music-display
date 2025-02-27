@@ -16,6 +16,7 @@
       font-family: Arial, sans-serif; 
       color: #fff; 
       background-color:#000; 
+      margin: 0;
     }
     .cover-art { 
       max-width: 800px; 
@@ -23,7 +24,7 @@
     }
     .status { 
       font-size: 1.2em; 
-      color:#199dc9;
+      color:#fff;
       padding: 20px; 
     }
     #sound-waves {
@@ -37,6 +38,8 @@
       background-color: #199dc9;
       flex: 1;
       width: 100vw;
+      min-height:600px;
+      margin:0;
       position: relative;
 
       -webkit-transition: background-color 1000ms linear;
@@ -55,7 +58,7 @@
     }
 
     #toggleButton {
-      position: fixed;
+      position: absolute;
       bottom: 20px;
       right: 20px;
       width: 70px;
@@ -114,13 +117,15 @@
       .track-info {
         position: absolute;
         top: 20px;
-        left: 680px;
+        left: 640px;
+        width: 384px;
       }
       .cover-art { 
         position: absolute;
         top: 0px;
         left: 20px;
-        max-width: 600px; 
+        width: 600px; 
+        height: 600px;
       }
     }
   </style>
@@ -130,6 +135,9 @@
     <div class="track-info">
       <h1 id="track-title">No Track Detected</h1>
       <h2 id="track-subtitle"></h2>
+      <div class="status">
+        <p id="status-text">Listening...</p>
+      </div>
     </div>
     <img id="cover-art" class="cover-art" src="/images/default-placeholder.svg" alt="Default Cover Art">
     
@@ -141,9 +149,6 @@
   </main>
 
   <footer>
-    <div class="status">
-      <p id="status-text">Listening...</p>
-    </div>
     <button id="toggleButton" onclick="togglePause()" title="Pause/Resume Service">
       <i id="toggleIcon" class="icon fas fa-pause"></i>
     </button>
@@ -176,7 +181,6 @@
           switch(data.status) {
             case 'recording':
               main.style.backgroundColor = '#c91983';
-              status.style.color = '#c91983';
               status.innerText = 'Recording';
             break;
             case 'matched':
@@ -187,12 +191,10 @@
             case 'gap_detected':
             case 'retry_wait':
               main.style.backgroundColor = '#199dc9';
-              status.style.color = '#199dc9';
               status.innerText = "Listening...";
             break;
             case 'paused':
               main.style.backgroundColor = '#199dc9';
-              status.style.color = '#199dc9';
               status.innerText = "Paused";
             break;
           }
