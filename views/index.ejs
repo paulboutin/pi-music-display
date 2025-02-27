@@ -160,6 +160,8 @@
         A song has been successfully recognized (i.e. the API returned a match) and the track data is now being displayed.
       retry_wait:
         No match was found for the recorded audio, and the system is waiting a short period before trying again.
+      gap_detected:
+        song ended.
       paused:
         User paused the service.
     */
@@ -182,6 +184,7 @@
               status.innerText = "";
             break;
             case 'idle':
+            case 'gap_detected':
             case 'retry_wait':
               main.style.backgroundColor = '#199dc9';
               status.style.color = '#199dc9';
