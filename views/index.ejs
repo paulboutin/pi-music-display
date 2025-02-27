@@ -18,8 +18,8 @@
       background-color:#000; 
     }
     .cover-art { 
-      max-width: 800px; 
-      margin: 20px auto; 
+      max-width: 600px; 
+      margin: 10px auto; 
     }
     .status { 
       font-size: 1.2em; 
@@ -108,6 +108,27 @@
     @keyframes wave {
       to {
         transform: translate(-50%, 0);
+      }
+    }
+
+    @media (max-height: 600px) {
+      .track-info {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+      }
+    }
+    @media (max-height: 600px) and (max-width: 1024px) {
+      .track-info {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+      }
+      .cover-art { 
+        margin: 10px 20px; 
       }
     }
   </style>
