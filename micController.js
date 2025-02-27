@@ -67,6 +67,32 @@ function recordAudioClip() {
   });
 }
 
+// simulateRecording uses a test file instead of recording from mic
+async function simulateRecording(app) {
+  const testAudioFilePath = path.join(process.cwd(), 'test', 'audio_sample2.ogg');
+  console.log('Simulating recording using test file:', testAudioFilePath);
+  try {
+    const result = await callShazamAPIReal(testAudioFilePath);
+    if (result && result.track) {
+      updateAppStatus(app, STATES.MATCHED);
+      if (app && app.locals) {
+        app.locals.track = result.track;
+      }
+      console.log('Simulated song matched:', result.track.title);
+    } else {
+      updateAppStatus(app, STATES.IDLE);
+      if (app && app.locals) {
+        app.locals.track = null;
+      }
+    }
+    return result;
+  } catch (error) {
+    console.error('Error in simulateRecording:', error);
+    updateAppStatus(app, STATES.IDLE);
+    throw error;
+  }
+}
+
 // Simulated API call (for testing)
 function callShazamAPISimulated(audioFilePath) {
   return new Promise((resolve) => {
