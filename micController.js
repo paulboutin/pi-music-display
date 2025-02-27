@@ -156,7 +156,7 @@ async function recordAndProcess(app) {
     if (result && result.track) {
       if (app.locals.track && app.locals.track.id === result.track.id) {
         console.log('Same track matched; maintaining current match.');
-        // Do not clear the track info; if silence continues, clear it via clearTrackTimer.
+        updateAppStatus(app, STATES.MATCHED); // Don't pass the updated track info but update the status to Matched
       } else {
         console.log('New track matched:', result.track.title);
         updateAppStatus(app, STATES.MATCHED, result.track);

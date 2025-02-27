@@ -373,8 +373,9 @@ sudo apt-get install chromium-browser
 ```
 
 ### 8. Create a Startup Script
-Create a script (for example, /home/pi/start-kiosk.sh) that launches Chromium in kiosk mode with your URL:
+Create a script (for example, /home/$USER/start-kiosk.sh) that launches Chromium in kiosk mode with your URL:
 
+**_NOTE:_** Replace $USER with your docker user
 ```bash
 #!/bin/bash
 # Wait a few seconds to allow services to start
@@ -384,8 +385,10 @@ chromium-browser --kiosk --noerrdialogs --enable-features=OverlayScrollbar --dis
 ```
 
 Make the script executable:
+**_NOTE:_** Replace $USER with your docker user
+
 ```bash
-chmod +x /home/pi/start-kiosk.sh
+chmod +x /home/$USER/start-kiosk.sh
 ```
 
 ### 9. Create a systemd Service File
