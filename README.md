@@ -1,6 +1,12 @@
 # pi-music-display
 
+<img src="screenshots/RaspberryPi.png" alt="Raspberry Pi Logo" height="50" />
+<img src="screenshots/python-logo.png" alt="Python Logo" height="50" />
+<img src="screenshots/nodejsStackedLight.svg" alt="NodeJs Logo" height="50" />
+
 A microservices-based remote display system for showcasing album artwork and track metadata of currently playing songs. This project uses a Node.js/Express server as a proxy to a Python FastAPI microservice that leverages [shazamio](https://github.com/shazamio/ShazamIO) to recognize songs from audio files. The system is containerized with Docker Compose to simplify development, testing, and eventual to a Raspberry Pi.
+
+<img src="screenshots/screenshot.png" alt="Screenshot of Pi Music Display" width="800" />
 
 ## Project Purpose
 
