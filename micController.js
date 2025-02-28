@@ -180,7 +180,7 @@ async function recordAndProcess(app) {
 
 // processAudioData: Processes each audio chunk using a single reused VAD instance.
 function processAudioData(audioChunk, app, vadInstance) {
-  if (STATES.PAUSED) {
+  if (app.locals.status === STATES.PAUSED) {
     console.log('Current state is paused.');
     if (gapTimer) {
       clearTimeout(gapTimer);
