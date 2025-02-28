@@ -10,7 +10,7 @@ A microservices-based remote display system for showcasing album artwork and tra
 
 ## Project Purpose
 
-The goal of **pi-music-display** is to create an interactive, remote display that automatically updates with the album artwork, title, artist, and other metadata of any song playing in its vicinity. This can be used in settings such as home entertainment, public installations, or even as a creative art project. By separating the application logic into a Node.js front end and a Python-based song recognition microservice, the project ensures modularity and flexibility.
+The goal of **pi-music-display** is to create an interactive, remote display that automatically updates with the album artwork, title, artist, and other metadata of any song playing in its vicinity. This can be used in settings such as home entertainment, public installations, or as a creative art project.
 
 ## Features
 
@@ -19,6 +19,12 @@ The goal of **pi-music-display** is to create an interactive, remote display tha
 - **Containerized Development:** Docker Compose is used to orchestrate both the Node.js and Python services.
 - **Automated Testing:** Tests written with Mocha (for Node.js) and pytest (for Python) ensure the endpoints and integrations work as expected.
 - **Configurable Environment:** A minimal ```.env``` file is used to define configuration variables (e.g., server PORT).
+
+## Tested Devices
+Currently tested on Raspberry Pi 1 and 5
+
+- **Raspberry Pi 1**: The Architecture doesn't support the needed python libraries needed.
+- **Raspberry Pi 5**: Works great with no issues.
 
 ## Local Development Setup
 
