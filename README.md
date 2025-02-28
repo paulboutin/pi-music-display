@@ -23,7 +23,7 @@ The goal of **pi-music-display** is to create an interactive, remote display tha
 ## Tested Devices
 Currently tested on Raspberry Pi 1 and 5
 
-- **Raspberry Pi 1**: The Architecture doesn't support the needed python libraries needed.
+- **Raspberry Pi 1**: The Architecture doesn't support the needed python libraries.
 - **Raspberry Pi 5**: Works great with no issues.
 
 ## Local Development Setup
