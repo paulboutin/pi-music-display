@@ -180,6 +180,8 @@
           var main = document.querySelector('main');
           var footer = document.querySelector('footer');
           var waves = document.getElementById('sound-waves');
+          paused = (data.status === 'paused');
+          updateToggleButton();
           switch(data.status) {
             case 'recording':
               main.style.backgroundColor = '#c91983';
@@ -198,8 +200,6 @@
             case 'paused':
               main.style.backgroundColor = '#199dc9';
               status.innerText = "Paused";
-              paused = true;
-              updateToggleButton();
             break;
           }
           if (data.status !== 'matched') {
