@@ -180,6 +180,17 @@ async function recordAndProcess(app) {
 
 // processAudioData: Processes each audio chunk using a single reused VAD instance.
 function processAudioData(audioChunk, app, vadInstance) {
+  if (STATES.PAUSED) {
+    if (gapTimer) {
+      clearTimeout(gapTimer);
+      gapTimer = null;
+    }
+    if (clearTrackTimer) {
+      clearTimeout(clearTrackTimer);
+      clearTrackTimer = null;
+    }
+    return;
+  }
   vadInstance.processAudio(audioChunk, sampleRate)
     .then((result) => {
       if (result !== VAD.Event.VOICE) {
