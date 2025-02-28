@@ -99,6 +99,7 @@ This command mounts your project directory into the Python container and runs:
     pi-music-display/
     ├── app.js                # Express application
     ├── index.js              # Entry point for the Node.js server
+    ├── main.py               # Entry point for the Python server
     ├── package.json          # Node.js project configuration and scripts
     ├── .env                  # Environment variables
     ├── Dockerfile            # Dockerfile for the Node.js service
@@ -109,6 +110,8 @@ This command mounts your project directory into the Python container and runs:
         ├── api.test.js       # Node.js tests (Mocha/Supertest)
         └── python/
             └── test_main.py  # Python tests (pytest)
+    └── views/
+        ├── index.ejs         # Express template for main display
 
 ## Build and Deployment
 
