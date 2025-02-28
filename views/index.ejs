@@ -198,6 +198,8 @@
             case 'paused':
               main.style.backgroundColor = '#199dc9';
               status.innerText = "Paused";
+              paused = true;
+              updateToggleButton();
             break;
           }
           if (data.status !== 'matched') {
