@@ -185,7 +185,7 @@
           switch(data.status) {
             case 'recording':
               main.style.backgroundColor = '#c91983';
-              status.innerText = 'Recording';
+              status.innerText = 'Analyzing…';
             break;
             case 'matched':
               main.style.backgroundColor = '#000000';
@@ -195,7 +195,7 @@
             case 'gap_detected':
             case 'retry_wait':
               main.style.backgroundColor = '#199dc9';
-              status.innerText = "Listening...";
+              status.innerText = "Listening…";
             break;
             case 'paused':
               main.style.backgroundColor = '#199dc9';
